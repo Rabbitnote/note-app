@@ -216,6 +216,9 @@ export default function SnakeGame () {
 
   return (
     <>
+    <div>
+      <h1 className="title">Snake Game</h1>
+      </div>
       <main>
         <canvas
           ref={canvasRef}
