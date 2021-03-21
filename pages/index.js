@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import useInterval from '@use-it/interval'
-import Head from './components/head';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function SnakeGame () {
@@ -217,7 +216,6 @@ export default function SnakeGame () {
 
   return (
     <>
-      <Head />
       <main>
         <canvas
           ref={canvasRef}
