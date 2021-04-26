@@ -30,12 +30,11 @@ export default function SnakeGame() {
     const [previousVelocity, setPreviousVelocity] = useState({});
     const [email, setEmail] = useState('');
     const [text, setText] = useState('');
-    const [boardList, setBroadList] = useState(['']);
-    const mockData = [
+    const [boardList, setBroadList] = useState([
         { email: 'Note@email.com', score: 2 },
         { email: 'Note@email.com', score: 2 },
         { email: 'Note@email.com', score: 2 }
-    ];
+    ]);
 
     const clearCanvas = ctx =>
         ctx.clearRect(-1, -1, canvasWidth + 2, canvasHeight + 2);
@@ -303,8 +302,8 @@ export default function SnakeGame() {
     };
     const onSubmit = () => {
         console.log(text);
-        console.log(score);
-        setBroadList([...mockData, { email: text, score: score }]);
+        console.log;
+        setBroadList([...boardList, { email: text, score: score }]);
     };
 
     return (
@@ -381,7 +380,7 @@ export default function SnakeGame() {
                     <p>Ranking</p>
                     <p>LeaderBoard</p>
                 </div>
-                {mockData.map((list, index) => {
+                {boardList.map((list, index) => {
                     return (
                         <div className='list' key={index}>
                             <p className='rank'>{index + 1}</p>
