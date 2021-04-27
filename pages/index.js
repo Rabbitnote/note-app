@@ -40,8 +40,38 @@ export default function SnakeGame() {
         const res = await axios.get('http://localhost:5000/api/list');
         setBroadList(res.data);
     };
+    const onSubmit = async () => {
+      if(name==''){
+        return
+      }
+        for (var i = 0; i < boardList.length; i++) {
+            console.log(boardList[i].name);
+            console.log(boardList[i].name === name);
+            if (boardList[i].name === name) {
+                setDupli(true);
+                break;
+            }
+        }
+        console.log(duplicate);
+        if (duplicate == true) {
+            const data = { name: name, score: score };
+            const res = await axios.patch('http://localhost:5000/api/update', data);
+            setBroadList(res.data);
+            setSave(true);
+        } else {
+            const res = await axios.post('http://localhost:5000/api/add', {
+                name: name,
+                score: score
+            });
+            setBroadList(res.data)
+            console.log(res.data)
+            setText('');
+            setSave(true);
+        }
+    };
 
     useEffect(() => {
+        onSubmit();
         fetchList();
     }, []);
 
@@ -309,33 +339,6 @@ export default function SnakeGame() {
     const onTextChange = ({ target: { value } }) => {
         setName(value);
         setText(value);
-    };
-
-    const onSubmit = async () => {
-        for (var i = 0; i < boardList.length; i++) {
-            console.log(boardList[i].name);
-            console.log(boardList[i].name === name);
-            if (boardList[i].name === name) {
-                setDupli(true);
-                break;
-            }
-        }
-        console.log(duplicate);
-        if (duplicate == true) {
-            const data = { name: name, score: score };
-            console.log(name);
-            await axios.patch('http://localhost:5000/api/update', data);
-            const res = await axios.get('http://localhost:5000/api/list');
-            setBroadList(res.data);
-            setSave(true);
-        } else {
-            const data = { name: name, score: score };
-            await axios.post('http://localhost:5000/api/add', data);
-            const res = await axios.get('http://localhost:5000/api/list');
-            setBroadList(res.data);
-            console.log(boardList);
-            setSave(true);
-        }
     };
 
     return (
