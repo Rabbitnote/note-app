@@ -9,10 +9,28 @@ const app = express()
 app.use(cors())
 app.use(bodyParser.json()) // ให้มันแปลง request body ที่เข้ามา (JSON) ให้อยู่ในรูป object
 
-app.get('/api/test', async (req,res)=>{
-    const data = await db.query(`Select * FROM public.leaderboard`);
+//Get Leaderboard List
+app.get('/api/list', async (req,res)=>{
+    const data = await db.query(`SELECT name,score FROM leaderboard ORDER BY score DESC`);
     res.send(data.rows);  
 })
+
+app.post('/api/add',async (req,res)=>{
+    const name = req.body.name;
+    const score = req.body.score;
+    await db.query(`INSERT INTO leaderboard(name,score) VALUES ('${name}',${score})`);
+    const data = await db.query(`SELECT name,score FROM leaderboard ORDER BY score DESC`);
+    res.status(201).send(data.rows);
+})
+app.patch('/api/update',async (req,res)=>{
+    const name = req.body.name;
+    const score = req.body.score;
+    await db.query(`UPDATE leaderboard SET score=${score} Where name='${name}'`)
+    const data =await db.query('SELECT * FROM leaderboard Order by score desc')
+    res.status(200).send(data.rows)
+})
+
+
 // app.get('/api/test', async (req, res) => {
 // 	const data = await db.query('SELECT current_timestamp')
 //     res.send(data.fields)

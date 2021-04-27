@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import useInterval from '@use-it/interval';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Leaderboard from '../components/Leaderboard';
+import axios from 'axios';
 
 export default function SnakeGame() {
     // Canvas Settings
@@ -28,13 +30,20 @@ export default function SnakeGame() {
     const [apple, setApple] = useState({});
     const [velocity, setVelocity] = useState({});
     const [previousVelocity, setPreviousVelocity] = useState({});
-    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
     const [text, setText] = useState('');
-    const [boardList, setBroadList] = useState([
-        { email: 'Note@email.com', score: 2 },
-        { email: 'Note@email.com', score: 2 },
-        { email: 'Note@email.com', score: 2 }
-    ]);
+    const [boardList, setBroadList] = useState([]);
+    const [save, setSave] = useState(false);
+    const [duplicate, setDupli] = useState(false);
+
+    const fetchList = async () => {
+        const res = await axios.get('http://localhost:5000/api/list');
+        setBroadList(res.data);
+    };
+
+    useEffect(() => {
+        fetchList();
+    }, []);
 
     const clearCanvas = ctx =>
         ctx.clearRect(-1, -1, canvasWidth + 2, canvasHeight + 2);
@@ -56,6 +65,7 @@ export default function SnakeGame() {
 
     // Initialise state and start countdown
     const startGame = () => {
+        setSave(false);
         setGameDelay(1000 / minGameSpeed);
         setIsLost(false);
         setScore(0);
@@ -297,13 +307,35 @@ export default function SnakeGame() {
 
     // Input
     const onTextChange = ({ target: { value } }) => {
-        setEmail(value);
+        setName(value);
         setText(value);
     };
-    const onSubmit = () => {
-        console.log(text);
-        console.log;
-        setBroadList([...boardList, { email: text, score: score }]);
+
+    const onSubmit = async () => {
+        for (var i = 0; i < boardList.length; i++) {
+            console.log(boardList[i].name);
+            console.log(boardList[i].name === name);
+            if (boardList[i].name === name) {
+                setDupli(true);
+                break;
+            }
+        }
+        console.log(duplicate);
+        if (duplicate == true) {
+            const data = { name: name, score: score };
+            console.log(name);
+            await axios.patch('http://localhost:5000/api/update', data);
+            const res = await axios.get('http://localhost:5000/api/list');
+            setBroadList(res.data);
+            setSave(true);
+        } else {
+            const data = { name: name, score: score };
+            await axios.post('http://localhost:5000/api/add', data);
+            const res = await axios.get('http://localhost:5000/api/list');
+            setBroadList(res.data);
+            console.log(boardList);
+            setSave(true);
+        }
     };
 
     return (
@@ -354,18 +386,23 @@ export default function SnakeGame() {
                                 ? `🎉 New Highscore : ${score} 🎉`
                                 : `You scored: ${score}`}
                         </p>
-                        <div className='row'>
-                            <p className='final-score'>
-                                Do you want to save this score ?{' '}
-                            </p>
-                            <input
-                                className='input'
-                                type='text'
-                                value={text}
-                                onChange={onTextChange}
-                            />
-                            <button onClick={onSubmit}>Submit</button>
-                        </div>
+                        {save ? (
+                            <p>Already Save</p>
+                        ) : (
+                            <div className='row'>
+                                <p className='final-score'>
+                                    Do you want to save this score ?{' '}
+                                </p>
+
+                                <input
+                                    className='input'
+                                    type='text'
+                                    value={text}
+                                    onChange={onTextChange}
+                                />
+                                <button onClick={onSubmit}>Submit</button>
+                            </div>
+                        )}
 
                         {!running && isLost && (
                             <button onClick={startGame}>
@@ -375,24 +412,7 @@ export default function SnakeGame() {
                     </div>
                 )}
             </main>
-            <div className='leaderBoard'>
-                <div className='top'>
-                    <p>Ranking</p>
-                    <p>LeaderBoard</p>
-                </div>
-                {boardList.map((list, index) => {
-                    return (
-                        <div className='list' key={index}>
-                            <p className='rank'>{index + 1}</p>
-                            <p className='title'>
-                                Email: {list.email}
-                                <br />
-                                Score: {list.score}
-                            </p>
-                        </div>
-                    );
-                })}
-            </div>
+            <Leaderboard></Leaderboard>
         </>
     );
 }

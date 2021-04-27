@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start"
   },
-  
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-brands-svg-icons": "^5.15.3",
@@ -15,11 +14,14 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@use-it/interval": "^1.0.0",
     "@zeit/next-css": "^1.0.1",
+    "aa": "^0.1.40",
+    "axios": "^0.21.1",
     "next": "^10.0.4",
     "pg": "^8.6.0",
     "pg-promise": "^10.10.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "sass": "^1.26.10"
+    "sass": "^1.26.10",
+    "react-axios": "^2.0.5"
   }
 }

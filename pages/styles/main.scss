@@ -13,11 +13,11 @@ body {
     align-items: center;
     .top{
       display: flex;
-      align-items: center;
       justify-content: space-around;
     }
     .rank{
       font-size: 25px;
+      width: 150px;
     }
     .list{
       font-size: 15px;
@@ -35,12 +35,14 @@ body {
       color: whitesmoke;
       border-radius: 5%;
       padding: 5px;
+      overflow: scroll;
       background-color: #11253e;
       // transform: translate(-50%,-50%);
       font-size: 25px;
   }
   p.title{
-    text-align: left;
+    width: 190px;
+    text-align: center;
   }
 }
 
