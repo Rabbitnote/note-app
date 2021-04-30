@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import useInterval from '@use-it/interval';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Leaderboard from '../components/Leaderboard';
+import Delete from '../components/DeletedName';
 import axios from 'axios';
 
 export default function SnakeGame() {
@@ -34,40 +35,50 @@ export default function SnakeGame() {
     const [text, setText] = useState('');
     const [boardList, setBroadList] = useState([]);
     const [save, setSave] = useState(false);
-    const [duplicate, setDupli] = useState(false);
+    const [name2, setName2] = useState('');
 
     const fetchList = async () => {
         const res = await axios.get('http://localhost:5000/api/list');
         setBroadList(res.data);
     };
     const onSubmit = async () => {
-      if(name==''){
-        return
-      }
-        for (var i = 0; i < boardList.length; i++) {
-            console.log(boardList[i].name);
+        let temp = false;
+        if (name == '') {
+            return;
+        }
+        for (let i = 0; i < boardList.length; i++) {
             console.log(boardList[i].name === name);
             if (boardList[i].name === name) {
-                setDupli(true);
+                temp = true;
                 break;
             }
         }
-        console.log(duplicate);
-        if (duplicate == true) {
+        console.log(temp);
+        if (temp === true) {
             const data = { name: name, score: score };
-            const res = await axios.patch('http://localhost:5000/api/update', data);
-            setBroadList(res.data);
+            const res = await axios.patch(
+                'http://localhost:5000/api/update',
+                data
+            );
+            setBroadList([...res.data]);
             setSave(true);
         } else {
             const res = await axios.post('http://localhost:5000/api/add', {
                 name: name,
                 score: score
             });
-            setBroadList(res.data)
-            console.log(res.data)
+            setBroadList([...res.data]);
             setText('');
             setSave(true);
         }
+    };
+    const onChange = ({ target: { value } }) => {
+        setName2(value);
+    };
+    const onEnter = async () => {
+      const res =await axios.delete(`http://localhost:5000/api/delete/${name2}`);
+        console.log(name2);
+        setBroadList(res.data)
     };
 
     useEffect(() => {
@@ -415,7 +426,18 @@ export default function SnakeGame() {
                     </div>
                 )}
             </main>
-            <Leaderboard></Leaderboard>
+            <Leaderboard boardList={boardList}></Leaderboard>
+            <div className='admin'>
+                <div className='top2'>
+                    <p>Admin Delete User</p>
+                    <input
+                        className='input'
+                        value={name2}
+                        onChange={onChange}
+                    />
+                    <button onClick={onEnter}>Delete</button>
+                </div>
+            </div>
         </>
     );
 }

@@ -11,6 +11,20 @@ body {
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    .admin{
+      background-color: #11253e;
+      color: whitesmoke;
+      position: absolute;
+      top: 30%;
+      left: 10%;
+      width: 250px;
+      height: 200px;
+      display: flex;
+      justify-content: center;
+    }.input{
+      margin-top:20px;
+      margin-bottom:20px;
+    }
     .top{
       display: flex;
       justify-content: space-around;

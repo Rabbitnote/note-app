@@ -19,7 +19,7 @@ app.post('/api/add',async (req,res)=>{
     const name = req.body.name;
     const score = req.body.score;
     await db.query(`INSERT INTO leaderboard(name,score) VALUES ('${name}',${score})`);
-    const data = await db.query(`SELECT name,score FROM leaderboard ORDER BY score DESC`);
+    const data = await db.query(`SELECT * FROM leaderboard ORDER BY score DESC`);
     res.status(201).send(data.rows);
 })
 app.patch('/api/update',async (req,res)=>{
@@ -27,6 +27,13 @@ app.patch('/api/update',async (req,res)=>{
     const score = req.body.score;
     await db.query(`UPDATE leaderboard SET score=${score} Where name='${name}'`)
     const data =await db.query('SELECT * FROM leaderboard Order by score desc')
+    res.status(200).send(data.rows)
+})
+app.delete('/api/delete/:name', async (req,res) => {
+    const name = req.params.name;
+    console.log(name)
+    await db.query(`DELETE FROM leaderboard WHERE name='${name}'`)
+    const data =await db.query('SELECT * FROM leaderboard ORDER BY score DESC')
     res.status(200).send(data.rows)
 })
 
